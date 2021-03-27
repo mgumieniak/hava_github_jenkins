@@ -17,6 +17,12 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+
+    compile group: 'com.hazelcast', name: 'hazelcast-all', version: '4.1'
+
+    compileOnly "org.projectlombok:lombok:1.18.10"
+    annotationProcessor "org.projectlombok:lombok:1.18.10"
 
     testImplementation "io.cucumber:cucumber-java:4.2.6"
     testImplementation "io.cucumber:cucumber-junit:4.2.6"
@@ -29,6 +35,7 @@ task acceptanceTest(type: Test) {
 }
 
 test {
+    systemProperty 'spring.profiles.active', 'e2e'
     exclude '**/acceptance/**'
     useJUnitPlatform()
 }

@@ -1,0 +1,18 @@
+hazelcast:
+  cluster-name: java-github-jenkins
+  network:
+    join:
+      multicast:
+        enabled: false
+      kubernetes:
+        enabled: true
+        namespace: default
+        service-name: java-github-jenkins-service
+  map:
+    getCarId:
+      time-to-live-seconds: 1
+      event-journal:
+        time-to-live-seconds: 1
+      near-cache:
+        time-to-live-seconds: 1
+        max-idle-seconds: 1

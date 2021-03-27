@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: java-github-jenkins-deployment
+spec:
+  replicas: 1
+  serviceName: "java-github-jenkins-service"
+  selector:
+    matchLabels:
+      app: java-github-jenkins
+  template:
+    metadata:
+      labels:
+        app: java-github-jenkins
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: hazelcast
+        image: hazelcast/hazelcast:4.2
+        ports:
+        - name: hazelcast
+          containerPort: 5701
+        volumeMounts:
+          - mountPath: /opt/hazelcast/config_ext
+            name: hazelcast-config
+        env:
+          - name: JAVA_OPTS #custom config file
+            value: -Dhazelcast.config=/opt/hazelcast/config_ext/hazelcast.yaml
+      - name: java-github-jenkins-pod
+        image: maciejgum/java-github-jenkins:latest
+        imagePullPolicy: Always
+        envFrom:
+          - configMapRef:
+              name: java-github-jenkins-env
+        ports:
+        - containerPort: 8080
+          name: http
+      volumes:
+        - name: hazelcast-config
+          configMap:
+            name: hazelcast-cf
